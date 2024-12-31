@@ -1,0 +1,42 @@
+  <script>
+    // Script direto no HTML
+    document.addEventListener('DOMContentLoaded', () => {
+      const links = document.querySelectorAll('.scroll-link');
+      links.forEach(link => {
+        link.addEventListener('click', event => {
+          event.preventDefault(); // Impede o comportamento padrão do link
+
+          const targetId = link.getAttribute('href');
+          const targetElement = document.querySelector(targetId);
+
+          if (targetElement) {
+            const targetPosition = targetElement.offsetTop;
+            let startPosition = window.scrollY;
+            let distance = targetPosition - startPosition;
+            let duration = 800;
+            let startTime = null;
+
+            const smoothScroll = currentTime => {
+              if (!startTime) startTime = currentTime;
+
+              let timeElapsed = currentTime - startTime;
+              let run = ease(timeElapsed, startPosition, distance, duration);
+              window.scrollTo(0, run);
+
+              if (timeElapsed < duration) requestAnimationFrame(smoothScroll);
+            };
+
+            const ease = (t, b, c, d) => {
+              t /= d / 2;
+              if (t < 1) return (c / 2) * t * t + b;
+              t--;
+              return (-c / 2) * (t * (t - 2) - 1) + b;
+            };
+
+            requestAnimationFrame(smoothScroll);
+          }
+        });
+      });
+    });
+  </script>
+
